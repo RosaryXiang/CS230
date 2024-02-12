@@ -22,16 +22,18 @@ f = open(dataset)
 content = f.read()
 json_content = json.loads(content)
 
-print(len(json_content))
+print("number of articles: " + len(json_content))
 len_doc = open('./output/len_doc.txt', 'w')
 len_doc.write(str(len(json_content)))
 
 inverted_index ={}  # words to a list of article indexes
 inverted_index_count = {} # numbers of words in different articles
+doc_index_to_headline = {}
 
 for index in range(len(json_content)):
     article = json_content[index]
-    words = word_tokenize(article["short_description"])
+    words = word_tokenize(article["headline"])
+    doc_index_to_headline[index] = article["headline"]
     for w in words:
         word = PorterStemmer().stem(w)
         if re.match(r'(^[a-z]+$)',word) and len(word)>2 and stopwords1.get(word)==None:
@@ -52,7 +54,7 @@ for index in range(len(json_content)):
 # print(inverted_index)
 print("generation completed")
 
-print(len(inverted_index_count))
+print("number of words" + len(inverted_index_count))
 len_doc = open('./output/len_word.txt', 'w')
 len_doc.write(str(len(inverted_index_count)))
 
@@ -69,4 +71,12 @@ output.write(dic)
 output.close()
 
 print("inverted_index output completed")
+
+output = open('./output/doc_index_to_headline.json', 'w')
+dic = json.dumps(doc_index_to_headline)
+output.write(dic)
+output.close()
+
+print("doc_index_to_headline output completed")
+
 print("Complete!")

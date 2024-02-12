@@ -10,7 +10,7 @@ import scipy.sparse
 import numpy as np
 import bisect
 
-print('正在加载，请稍候')
+print('Loading...')
 
 inverted_index = open('./output/inverted_index.json')
 inverted_index = inverted_index.read()
@@ -22,7 +22,6 @@ tf_idf_table = tf_idf_table.tocsr()
 f = open('./output/inverted_index_count.json')
 content = f.read()
 inverted_index_count = json.loads(content)
-print(type(inverted_index_count['health']))
 
 f = open('./output/len_doc.txt')
 line = f.readline()
@@ -32,8 +31,6 @@ len_words = len(inverted_index_count)
 cast2 = open('./output/word_to_num.json')
 cast2_content = cast2.read()
 word_to_num = json.loads(cast2_content)
-# 词语到数组下标
-
 
 def tf_idf_q(q):
     table = {}
@@ -52,18 +49,16 @@ def tf_idf_q(q):
         tf[word_to_num[word]] = table[word]
         df[word_to_num[word]] = len(inverted_index_count[word])
     i = 0
-    print(type(df[i]))
     while i < len(res):
         if (df[i] == 0):
             res[i] = 0
         else:
-            print(df[i])
             res[i] = (1+math.log10(tf[i]))*(math.log10(len_doc/(df[i])))
         i = i+1
     return res
 
 
-chaxun = input('请输入语义查询：')
+chaxun = input('Please type in keywords:')
 content = chaxun.strip()
 words = word_tokenize(content)
 stems = []
@@ -97,10 +92,7 @@ def cos(doc_id, value):
 
 
 ans = []
-
-doc_ids={}#12345789
-
-print(stems)
+doc_ids={}
 
 for x in stems:
     if inverted_index.get(x)!=None:
@@ -108,15 +100,15 @@ for x in stems:
         for id in ids:
             if doc_ids.get(id)==None:
                 doc_ids[id]=1
-print(doc_ids)
 
 for id in doc_ids.keys():
     bisect.insort(ans,(cos(id,value),id))   
 
+f = open("./output/doc_index_to_headline.json")
+content = f.read()
+doc_index_to_headline = json.loads(content)
 
-
-
-# print(ans)
+print("respond: ")
 for i in range(10):
     if(ans[-i-1][0] != 0):
-        print(str(ans[-1-i][1]))
+        print(str(i+1) + ". " + doc_index_to_headline[str(ans[-1-i][1])])
