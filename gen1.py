@@ -27,7 +27,7 @@ len_doc = open('./output/len_doc.txt', 'w')
 len_doc.write(str(len(json_content)))
 
 inverted_index ={}  # words to a list of article indexes
-inverted_index_count = {} # numbers of words in different articles 
+inverted_index_count = {} # numbers of words in different articles
 
 for index in range(len(json_content)):
     article = json_content[index]
@@ -55,41 +55,6 @@ print("generation completed")
 print(len(inverted_index_count))
 len_doc = open('./output/len_word.txt', 'w')
 len_doc.write(str(len(inverted_index_count)))
-
-# path = '/home/zhangjia/桌面/实验一/dataset/US_Financial_News_Articles'
-# folders = os.listdir(path)
-# i = -1
-# inverted_index = {}
-# inverted_index1 = {}
-# num_to_path={}
-# for folder in folders:
-#     path_now = path + "/"+folder
-#     files = os.listdir(path_now)
-#     for file in files:
-#         i = i+1
-#         if not os.path.isdir(file):
-#             f = open(path_now+"/"+file)
-#             num_to_path[i]=path_now+"/"+file
-#             content = f.read()
-#             jcon = json.loads(content)
-#             words = word_tokenize(jcon['text'])
-#             stems = []
-#             for w in words:
-#                 word = PorterStemmer().stem(w)
-#                 if re.match(r'(^[a-z]+$)',word) and len(word)>2:
-#                     if(stopwords1.get(word)==None):
-#                         if inverted_index.get(word)!=None:
-#                             if i != inverted_index[word][-1]:
-#                                 inverted_index[word].append(i)
-#                         else:
-#                             inverted_index[word] = [i]
-#                         if inverted_index1.get(word)!=None:
-#                             if inverted_index1[word].get(i) != None:
-#                                 inverted_index1[word][i]=inverted_index1[word][i]+1
-#                             else:
-#                                 inverted_index1[word][i]=1
-#                         else:
-#                             inverted_index1[word]={i:1}
 
 out=open('./output/inverted_index_count.json', 'w')
 dd = json.dumps(inverted_index_count)
