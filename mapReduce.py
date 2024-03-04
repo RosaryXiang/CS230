@@ -1,3 +1,4 @@
+from mrjob.job import MRJob
 import json
 import math
 from re import L
@@ -65,7 +66,7 @@ query_stems = []
 for w in searching_words:
     stem = PorterStemmer().stem(w)
     query_stems.append(stem)
-
+#change input into a vector
 query_vector = tf_idf_q(query_stems)
 
 
@@ -89,7 +90,6 @@ def cos(doc_id, query_vector):
     fenmu = fenmu1*fenmu2
     return ans/(fenmu)
 
-
 ans = []
 doc_ids={}
 
@@ -100,14 +100,15 @@ for x in query_stems:
             if doc_ids.get(id)==None:
                 doc_ids[id]=1
 
-for id in doc_ids.keys():
-    bisect.insort(ans,(cos(id,query_vector),id))   
+class MRWordFrequencyCount(MRJob):
 
-f = open("./output/doc_index_to_headline.json")
-content = f.read()
-doc_index_to_headline = json.loads(content)
+    def mapper(self, _, line):
+        yield "chars", len(line)
+        yield "words", len(line.split())
+        yield "lines", 1
 
-print("respond: ")
-for i in range(10):
-    if(ans[-i-1][0] != 0):
-        print(str(i+1) + ". " + doc_index_to_headline[str(ans[-1-i][1])])
+    def reducer(self, key, values):
+        yield key, sum(values)
+
+
+MRWordFrequencyCount.run()
