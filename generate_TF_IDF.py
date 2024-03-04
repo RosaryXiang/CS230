@@ -35,16 +35,22 @@ for word in inverted_index_count.keys():
 
 print("matrix's data filled")
 
+output_matrix = open("tf_idf.txt", 'w')
+
+
 mm = coo_matrix(matrix)
 
 print("changed to coo matrix")
 
-f_w_t_n = open('./output/word_to_num.json', 'w')
-dic = json.dumps(word_to_num)
-f_w_t_n.write(dic)
-f_w_t_n.close()
+for i,j,v in zip(mm.row, mm.col, mm.data):
+    output_matrix.write("%d,%d,%s\n" % (i,j,v))
 
-scipy.sparse.save_npz('./output/matrix.npy',mm,True)
+# f_w_t_n = open('./output/word_to_num.json', 'w')
+# dic = json.dumps(word_to_num)
+# f_w_t_n.write(dic)
+# f_w_t_n.close()
 
-print("coo matrix saved")
+# scipy.sparse.save_npz('./output/matrix.npy',mm,True)
+
+# print("coo matrix saved")
 print("Completed!")

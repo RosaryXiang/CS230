@@ -17,8 +17,11 @@ inverted_index = open('./output/inverted_index.json')
 inverted_index = inverted_index.read()
 inverted_index = json.loads(inverted_index)
 
-tf_idf_table = scipy.sparse.load_npz('./output/matrix.npy.npz')
-tf_idf_table = tf_idf_table.tocsr()
+#loading tf-idf-matrix
+matrix = open("tf_idf.txt",'r')
+lines = matrix.readlines()
+# tf_idf_table = scipy.sparse.load_npz('./output/matrix.npy.npz')
+# tf_idf_table = tf_idf_table.tocsr()
 
 f = open('./output/inverted_index_count.json')
 content = f.read()
@@ -69,46 +72,67 @@ for w in searching_words:
 #change input into a vector
 query_vector = tf_idf_q(query_stems)
 
-
-def cos(doc_id, query_vector):
-    if query_vector[0] == -1:
-        return 0
-    ans = 0
-    for xxx in query_stems:
-        if word_to_num.get(xxx)!=None:
-            ans = ans+query_vector[word_to_num[xxx]]*tf_idf_table[doc_id,word_to_num[xxx]]
-    fenmu1 = 0
-    fenmu2 = 0
-    for xxx in query_stems:
-        if word_to_num.get(xxx)!=None:
-            fenmu1 = fenmu1+query_vector[word_to_num[xxx]]*query_vector[word_to_num[xxx]]
-    fenmu1 = math.sqrt(fenmu1)
-    for xxx in query_stems:
-        if word_to_num.get(xxx)!=None:
-            fenmu2 = fenmu2+tf_idf_table[doc_id,word_to_num[xxx]]*tf_idf_table[doc_id,word_to_num[xxx]]
-    fenmu2 = math.sqrt(fenmu2)
-    fenmu = fenmu1*fenmu2
-    return ans/(fenmu)
-
-ans = []
 doc_ids={}
-
 for x in query_stems:
     if inverted_index.get(x)!=None:
         ids=inverted_index[x]
         for id in ids:
             if doc_ids.get(id)==None:
                 doc_ids[id]=1
+stem_id = []
+for stem in query_stems:
+    stem_id.append(word_to_num[stem])        
+
+def cos(query_vector, doc_info):
+    if query_vector[0] == -1:
+        return 0
+    ans = 0
+    for item in doc_info:
+        col = map(int,[item[0]])
+        value = map(float,[item[1]])
+        if col in stem_id:
+            ans = ans+query_vector[col]*value
+    fenmu1 = 0
+    fenmu2 = 0
+    for col, value in doc_info:
+        if col in stem_id:
+            fenmu1 = fenmu1+query_vector[col]*query_vector[col]
+    fenmu1 = math.sqrt(fenmu1)
+    for col, value in doc_info:
+        if col in stem_id:
+            fenmu2 = fenmu2+value*value
+    fenmu2 = math.sqrt(fenmu2)
+    fenmu = fenmu1*fenmu2
+    return ans/(fenmu)
 
 class MRWordFrequencyCount(MRJob):
+    # def __init__(self, doc_ids, query_vector):
+    #     doc_ids = doc_ids
+    #     query_vector = query_vector
 
-    def mapper(self, _, line):
-        yield "chars", len(line)
-        yield "words", len(line.split())
-        yield "lines", 1
+    def mapper(self, _, lines):
+        prev_row = 0
+        cols = [(-1, 0)]
+        lines = lines.rstrip().split("\t")
+        for line in lines:
+            row, col, value = line.rstrip().split(",")
+            row, col = map(int,[row, col])
+            value = map(float, [value])
+            if row == prev_row:
+                cols.append((col, value))
+            else:
+                yield row, cols #key=row index(doc id), value=tuple(col,value)
+                cols = [(-1, 0)]
+            prev_row = row
 
     def reducer(self, key, values):
-        yield key, sum(values)
+        for id in doc_ids.keys():
+            if key == id:
+                yield (cos(query_vector, values),key)
 
-
-MRWordFrequencyCount.run()
+ans=[]
+# mrjob = MRWordFrequencyCount(doc_ids, query_vector)
+# result = mrjob.run()
+result = MRWordFrequencyCount.run()
+for res in result:
+    bisect.insort(ans, res)
