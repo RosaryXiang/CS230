@@ -82,9 +82,9 @@ def cos(doc_id, query_vector):
         if word_to_num.get(xxx)!=None:
             fenmu1 = fenmu1+query_vector[word_to_num[xxx]]*query_vector[word_to_num[xxx]]
     fenmu1 = math.sqrt(fenmu1)
-    for xxx in query_stems:
+    for i in range(len_words):
         if word_to_num.get(xxx)!=None:
-            fenmu2 = fenmu2+tf_idf_table[doc_id,word_to_num[xxx]]*tf_idf_table[doc_id,word_to_num[xxx]]
+            fenmu2 = fenmu2+tf_idf_table[doc_id,i]*tf_idf_table[doc_id,i]
     fenmu2 = math.sqrt(fenmu2)
     fenmu = fenmu1*fenmu2
     return ans/(fenmu)

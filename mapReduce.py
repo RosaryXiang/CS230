@@ -1,14 +1,8 @@
 from mrjob.job import MRJob
 import json
 import math
-from re import L
 from nltk import word_tokenize
-from nltk.corpus import stopwords
-from nltk.corpus.reader import indian
-from nltk.util import filestring, invert_dict, pr
 from nltk.stem.porter import PorterStemmer
-import scipy.sparse
-import numpy as np
 import bisect
 
 print('Loading...')
@@ -81,58 +75,62 @@ for x in query_stems:
                 doc_ids[id]=1
 stem_id = []
 for stem in query_stems:
-    stem_id.append(word_to_num[stem])        
+    if stem in word_to_num.keys():
+        stem_id.append(word_to_num[stem]) 
+
+print(query_stems)       
+print(stem_id)
+
+f = open("./output/doc_index_to_headline.json")
+content = f.read()
+doc_index_to_headline = json.loads(content)
 
 def cos(query_vector, doc_info):
     if query_vector[0] == -1:
         return 0
     ans = 0
-    for item in doc_info:
-        col = map(int,[item[0]])
-        value = map(float,[item[1]])
-        if col in stem_id:
-            ans = ans+query_vector[col]*value
     fenmu1 = 0
     fenmu2 = 0
-    for col, value in doc_info:
+    for item in doc_info:
+        col = int(item[0])
+        value = float(item[1])
+        fenmu2 = fenmu2+value*value
         if col in stem_id:
-            fenmu1 = fenmu1+query_vector[col]*query_vector[col]
+            ans = ans+query_vector[col]*value
+    for col in stem_id:
+        fenmu1 = fenmu1 + query_vector[col] * query_vector[col]
     fenmu1 = math.sqrt(fenmu1)
-    for col, value in doc_info:
-        if col in stem_id:
-            fenmu2 = fenmu2+value*value
     fenmu2 = math.sqrt(fenmu2)
     fenmu = fenmu1*fenmu2
     return ans/(fenmu)
 
 class MRWordFrequencyCount(MRJob):
-    # def __init__(self, doc_ids, query_vector):
-    #     doc_ids = doc_ids
-    #     query_vector = query_vector
-
+    # def __init__(self):
+    #     self.ans = []
+    ans = []
     def mapper(self, _, lines):
-        prev_row = 0
-        cols = [(-1, 0)]
         lines = lines.rstrip().split("\t")
         for line in lines:
             row, col, value = line.rstrip().split(",")
-            row, col = map(int,[row, col])
-            value = map(float, [value])
-            if row == prev_row:
-                cols.append((col, value))
-            else:
-                yield row, cols #key=row index(doc id), value=tuple(col,value)
-                cols = [(-1, 0)]
-            prev_row = row
+            yield row, (col, value) #key=row index(doc id), value=tuple(col,value)
 
     def reducer(self, key, values):
-        for id in doc_ids.keys():
-            if key == id:
-                yield (cos(query_vector, values),key)
+        # values is a generator
+        doc_info = []
+        for v in values:
+            col = int(v[0])
+            value = float(v[1])
+            doc_info.append((col, value))
+        res = cos(query_vector, doc_info)
+        if res-0 >= 0.00001:
+            bisect.insort(self.ans, (res,key)) 
 
-ans=[]
-# mrjob = MRWordFrequencyCount(doc_ids, query_vector)
-# result = mrjob.run()
-result = MRWordFrequencyCount.run()
-for res in result:
-    bisect.insort(ans, res)
+    def output(self):
+        return self.ans
+
+mr = MRWordFrequencyCount()
+mr.run()
+ans = mr.output()
+for i in range(10):
+    if(ans[-i-1][0] != 0):
+        print(str(i+1) + ". " + doc_index_to_headline[str(ans[-1-i][1])])
