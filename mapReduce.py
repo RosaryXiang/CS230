@@ -78,9 +78,6 @@ for stem in query_stems:
     if stem in word_to_num.keys():
         stem_id.append(word_to_num[stem]) 
 
-print(query_stems)       
-print(stem_id)
-
 f = open("./output/doc_index_to_headline.json")
 content = f.read()
 doc_index_to_headline = json.loads(content)
