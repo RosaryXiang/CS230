@@ -1,4 +1,7 @@
 env
+bin
+lib
+pyvenv.cfg
 
 *.out
 .DS_Store

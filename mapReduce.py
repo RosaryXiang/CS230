@@ -1,3 +1,4 @@
+#!usr/bin/python
 from mrjob.job import MRJob
 import json
 import math
@@ -56,7 +57,7 @@ def tf_idf_q(q):
     return res
 
 
-search = input('Please type in keywords:')
+search = "bitcoin"
 content = search.strip()
 searching_words = word_tokenize(content)
 query_stems = []
