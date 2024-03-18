@@ -2,6 +2,7 @@ env
 bin
 lib
 pyvenv.cfg
+ans
 
 *.out
 .DS_Store
