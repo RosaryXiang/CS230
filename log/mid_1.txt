@@ -1,0 +1,128 @@
+python3 script.py c1.medium 1
+Please type in keywords:bitcoin
+5372,3.8740819634802195/
+python3 mapReduce2.py tf_idf.txt -r emr -n 5372,3.8740819634802195/ --output-dir=s3://cs230ans/c1.medium_1 --instance-type c1.medium --num-core-instances 1
+No configs found; falling back on auto-configuration
+No configs specified for emr runner
+Using s3://mrjob-737da6cfd37b3bbe/tmp/ as our temp dir on S3
+Creating temp directory /var/folders/1y/bsqxgrfj7fj4h8vkvrszmm6w0000gn/T/mapReduce2.junli.20240318.231625.863865
+uploading working dir files to s3://mrjob-737da6cfd37b3bbe/tmp/mapReduce2.junli.20240318.231625.863865/files/wd...
+Copying other local files to s3://mrjob-737da6cfd37b3bbe/tmp/mapReduce2.junli.20240318.231625.863865/files/
+Created new cluster j-2U7XLB7G807N5
+Added EMR tags to cluster j-2U7XLB7G807N5: __mrjob_label=mapReduce2, __mrjob_owner=junli, __mrjob_version=0.7.4
+Waiting for Step 1 of 1 (s-026779826T7LEPL2Z1RV) to complete...
+  PENDING (cluster is STARTING: Provisioning Amazon EC2 capacity)
+  PENDING (cluster is STARTING: Provisioning Amazon EC2 capacity)
+  PENDING (cluster is STARTING: Provisioning Amazon EC2 capacity)
+  PENDING (cluster is STARTING: Provisioning Amazon EC2 capacity)
+  PENDING (cluster is STARTING: Provisioning Amazon EC2 capacity)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  PENDING (cluster is STARTING: Configuring cluster software)
+  master node is ec2-52-38-228-82.us-west-2.compute.amazonaws.com
+  PENDING (cluster is RUNNING: Running step)
+  RUNNING for 0:00:49
+  RUNNING for 0:01:19
+  RUNNING for 0:01:49
+  RUNNING for 0:02:19
+  COMPLETED
+Attempting to fetch counters from logs...
+Waiting for cluster (j-2U7XLB7G807N5) to terminate...
+  TERMINATING
+  TERMINATED
+Looking for step log in s3://mrjob-737da6cfd37b3bbe/tmp/logs/j-2U7XLB7G807N5/steps/s-026779826T7LEPL2Z1RV...
+  Parsing step log: s3://mrjob-737da6cfd37b3bbe/tmp/logs/j-2U7XLB7G807N5/steps/s-026779826T7LEPL2Z1RV/syslog.gz
+Counters: 60
+	File Input Format Counters 
+		Bytes Read=32921241
+	File Output Format Counters 
+		Bytes Written=766
+	File System Counters
+		FILE: Number of bytes read=19488638
+		FILE: Number of bytes written=39516453
+		FILE: Number of large read operations=0
+		FILE: Number of read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=280
+		HDFS: Number of bytes read erasure-coded=0
+		HDFS: Number of bytes written=0
+		HDFS: Number of large read operations=0
+		HDFS: Number of read operations=2
+		HDFS: Number of write operations=0
+		S3: Number of bytes read=32921241
+		S3: Number of bytes written=766
+		S3: Number of large read operations=0
+		S3: Number of read operations=0
+		S3: Number of write operations=0
+	Job Counters 
+		Data-local map tasks=2
+		Killed map tasks=1
+		Launched map tasks=2
+		Launched reduce tasks=1
+		Total megabyte-milliseconds taken by all map tasks=27721216
+		Total megabyte-milliseconds taken by all reduce tasks=14620160
+		Total time spent by all map tasks (ms)=54143
+		Total time spent by all maps in occupied slots (ms)=866288
+		Total time spent by all reduce tasks (ms)=28555
+		Total time spent by all reduces in occupied slots (ms)=456880
+		Total vcore-milliseconds taken by all map tasks=54143
+		Total vcore-milliseconds taken by all reduce tasks=28555
+	Map-Reduce Framework
+		CPU time spent (ms)=59100
+		Combine input records=0
+		Combine output records=0
+		Failed Shuffles=0
+		GC time elapsed (ms)=1529
+		Input split bytes=280
+		Map input records=1131105
+		Map output bytes=43089356
+		Map output materialized bytes=19302134
+		Map output records=1131105
+		Merged Map outputs=2
+		Peak Map Physical memory (bytes)=307347456
+		Peak Map Virtual memory (bytes)=2267443200
+		Peak Reduce Physical memory (bytes)=274345984
+		Peak Reduce Virtual memory (bytes)=2285858816
+		Physical memory (bytes) snapshot=833802240
+		Reduce input groups=208904
+		Reduce input records=1131105
+		Reduce output records=28
+		Reduce shuffle bytes=19302134
+		Shuffled Maps =2
+		Spilled Records=2262210
+		Total committed heap usage (bytes)=365838336
+		Virtual memory (bytes) snapshot=6104936448
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+job output is in s3://cs230ans/c1.medium_1/
+Removing s3 temp directory s3://mrjob-737da6cfd37b3bbe/tmp/mapReduce2.junli.20240318.231625.863865/...
+Removing temp directory /var/folders/1y/bsqxgrfj7fj4h8vkvrszmm6w0000gn/T/mapReduce2.junli.20240318.231625.863865...
+Removing log files in s3://mrjob-737da6cfd37b3bbe/tmp/logs/j-2U7XLB7G807N5/...
+Terminating cluster: j-2U7XLB7G807N5
+download: s3://cs230ans/c1.medium_1/part-00000 to ans/c1.medium_1.txt
+
+Result:
+1. Bitcoin Plummets On Fears Of Regulatory Crackdown, Hits 4-Week Low
+2. Don't Spend A Cent On Bitcoin Until You See John Oliver's Cryptocurrency Warning
+3. Former Federal Agent Sentenced To 6 Years For Stealing Silk Road Bitcoins
+4. Paul Krugman: Bitcoins Would Have Been Considered Foolish By Adam Smith
+5. Bitcoin Turmoil: Proof of Concept or Fatal Flaw?
+6. The Tech Under Bitcoin Could Verify Your Real Estate Records Online
+7. Tiny Towns, Small States Bet On Bitcoin Even As Some Shun Its Miners
+8. Bitcoin: Digital Currency Attracts Financial Traders
+9. Bitcoin Hits $1 Trillion Market Cap, Soars To Another Record High
+10. Bullish on Bitcoin: These Travel Companies Want Your Virtual Money
